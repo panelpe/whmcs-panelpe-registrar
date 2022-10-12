@@ -1,0 +1,24 @@
+{
+    "name": "panelpe/whmcs-panelpe-registrar",
+    "description": "Panelpe Registrar Module for WHMCS Billing Automation Platform",
+    "autoload": {
+        "psr-4": {
+            "WHMCS\\Module\\Registrar\\Panelpe\\": "modules/registrars/panelpe/lib/"
+        }
+    },
+    "keywords": [
+        "whmcs",
+        "web host automation platform",
+        "registrar module",
+        "domain registrar module",
+        "peru registrar module",
+        "panelpe"
+    ],
+    "homepage": "https://github.com/panelpe/whmcs-panelpe-registrar",
+    "license": "GPL-3.0-only",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "guzzlehttp/guzzle": "^7.0"
+    }
+
+}

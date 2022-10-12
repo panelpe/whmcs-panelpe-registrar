@@ -1,0 +1,16 @@
+{
+    "name": "panelpe/whmcs-panelpe-registrar",
+    "description": "Registrar Module for WHMCS",
+    "autoload": {
+        "psr-4": {
+            "WHMCS\\Module\\Registrar\\Panelpe\\": "lib/"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "require": {
+        "php": "^7.4.3",
+        "ext-json": "*"
+    }
+}
