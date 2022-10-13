@@ -60,7 +60,7 @@ function panelpe_getConfigArray(array $params): array
             'FriendlyName' => 'Panelpe API Url',
             'Type' => 'text',
             'Size' => '200',
-            'Default' => '',
+            'Default' => 'https://app.panel.pe/',
             'Description' => 'Enter your panelpe API URL!',
         ],
         'panelpe_api_key' => [
