@@ -29,12 +29,17 @@ class RegisterDomain extends CommandBase
             $dnses[] = $this->params["ns$i"];
         }
 
+        $sld = $this->params['sld'];
+        $tld = $this->params['tld'];
+
         $params =  [
-            "domain" => $this->params['domain'],
+//            "domain" => $this->params['domain'],
+            "domain" =>  $sld . '.' . $tld,
             "client_id" => $clientId,
             "regperiod" => $this->params['regperiod'],
             "nameservers" => $dnses,
         ];
+
 
         $this->setResponse($this->api->getClient($clientOptions)->post('api/order/domains/register', [
             'form_params' =>$params,
