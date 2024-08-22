@@ -20,11 +20,13 @@ use WHMCS\Exception\Module\InvalidConfiguration;
 use WHMCS\Module\Registrar\Panelpe\Commands\AddDomain;
 use WHMCS\Module\Registrar\Panelpe\Commands\DeleteNameserver;
 use WHMCS\Module\Registrar\Panelpe\Commands\GetContactDetails;
+use WHMCS\Module\Registrar\Panelpe\Commands\GetDnsRecords;
 use WHMCS\Module\Registrar\Panelpe\Commands\GetDomainInfo;
 use WHMCS\Module\Registrar\Panelpe\Commands\SaveContactDetails;
 use WHMCS\Module\Registrar\Panelpe\Commands\GetEppCode;
 use WHMCS\Module\Registrar\Panelpe\Commands\GetNameServers;
 use WHMCS\Module\Registrar\Panelpe\Commands\GetStatusDomain;
+use WHMCS\Module\Registrar\Panelpe\Commands\SaveDnsRecords;
 use WHMCS\Module\Registrar\Panelpe\Commands\SaveStatusDomain;
 use WHMCS\Module\Registrar\Panelpe\Commands\RegisterDomain;
 use WHMCS\Module\Registrar\Panelpe\Commands\RegisterNameserver;
@@ -36,10 +38,10 @@ use WHMCS\Module\Registrar\Panelpe\Http;
 
 const PANELPE_VERSION = "1.0.0";
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 /**
- * @param array<string, mixed> $params
+ * @param  array<string, mixed>  $params
  * @return array<string, mixed>
  */
 function panelpe_getConfigArray(array $params): array
@@ -50,7 +52,7 @@ function panelpe_getConfigArray(array $params): array
     return [
         'FriendlyName' => [
             'Type' => 'System',
-            'Value' => 'PanelPe (v' . PANELPE_VERSION . ')',
+            'Value' => 'PanelPe (v'.PANELPE_VERSION.')',
         ],
         'Description' => [
             'Type' => 'System',
@@ -255,4 +257,67 @@ function panelpe_Sync($params)
     } catch (Exception $ex) {
         return ['error' => $ex->getMessage()];
     }
+}
+
+
+/**
+ * Get DNS Records for DNS Host Record Management.
+ *
+ * @param  array  $params  common module parameters
+ *
+ * @return array DNS Host Records
+ * @see https://developers.whmcs.com/domain-registrars/module-parameters/
+ *
+ */
+function panelpe_GetDNS($params)
+{
+
+    $dns = new GetDnsRecords($params);
+    $dns->execute();
+    $hostRecords = $dns->getRecords();
+
+    foreach ($hostRecords as &$rec) {
+        $rec["address"] = $rec["value"];
+    }
+    return $hostRecords;
+
+}
+
+/**
+ * Update DNS Host Records.
+ *
+ * @param  array  $params  common module parameters
+ *
+ * @return array
+ * @see https://developers.whmcs.com/domain-registrars/module-parameters/
+ *
+ */
+function panelpe_SaveDNS($params)
+{
+
+    $dnsRecords = array_filter($params['dnsrecords'], function ($rec) {
+        return !empty($rec['hostname']);
+    });
+
+    $dnsRecords = array_map(function ($rec) {
+        $rec['value'] = $rec['address'];
+        unset($rec['address'], $rec['recid']);
+        if ($rec['priority'] == 'N/A') {
+            $rec['priority'] = '';
+        }
+        $rec['ttl'] = 3600;
+        return $rec;
+    }, $dnsRecords);
+
+    $params['dnsrecords'] = $dnsRecords;
+
+
+    try {
+        $command = new SaveDnsRecords($params);
+        $command->execute();
+        return ['success' => true];
+    } catch (Exception $ex) {
+        return ['error' => $ex->getMessage()];
+    }
+
 }
