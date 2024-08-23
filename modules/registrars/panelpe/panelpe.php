@@ -36,7 +36,7 @@ use WHMCS\Module\Registrar\Panelpe\Commands\SaveNameServers;
 use WHMCS\Module\Registrar\Panelpe\Commands\TransferDomain;
 use WHMCS\Module\Registrar\Panelpe\Http;
 
-const PANELPE_VERSION = "1.0.0";
+const PANELPE_VERSION = "1.0.1";
 
 require_once __DIR__.'/vendor/autoload.php';
 
